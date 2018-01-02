@@ -1,0 +1,4 @@
+cozmo==1.2.1
+cozmoclad==2.1.0
+numpy==1.13.3
+Pillow==5.0.0
