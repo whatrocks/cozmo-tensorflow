@@ -1,5 +1,5 @@
 import cozmo
-from cozmo.util import degrees
+from cozmo.util import degrees, distance_mm, speed_mmps
 import time
 import sys
 import os
@@ -7,18 +7,33 @@ import os
 # GLOBALS
 imageNumber = 0
 directory = '.'
-
+liveCamera = False
 
 def on_new_camera_image(evt, **kwargs):
-	pilImage = kwargs['image'].raw_image
-	global directory
-	pilImage.save(f"data/{directory}/{directory}-{kwargs['image'].image_number}.jpeg", "JPEG")
+	global liveCamera
+	if liveCamera:
+		pilImage = kwargs['image'].raw_image
+		global directory
+		pilImage.save(f"data/{directory}/{directory}-{kwargs['image'].image_number}.jpeg", "JPEG")
+
+def move_to_next_side(robot: cozmo.robot.Robot):
+	robot.turn_in_place(degrees(-45)).wait_for_completed()
+	robot.drive_straight(distance_mm(400), speed_mmps(200), False, False, 0).wait_for_completed()
+	robot.turn_in_place(degrees(135)).wait_for_completed()
+	# Start photo sesh
+	liveCamera = True
+	robot.drive_straight(distance_mm(200), speed_mmps(100), False, False, 0).wait_for_completed()
+	robot.drive_straight(distance_mm(-200), speed_mmps(100), False, False, 0).wait_for_completed()
+	# Stop photo sesh
+	liveCamera = False
 
 def cozmo_program(robot: cozmo.robot.Robot):
 	
 	# Make sure Cozmo's head and arm are at reasonable levels
-	robot.set_head_angle(degrees(10.0)).wait_for_completed()
+	robot.set_head_angle(degrees(2.5)).wait_for_completed()
 	robot.set_lift_height(0.0).wait_for_completed()
+
+	robot.say_text(f"I'm going to take photos of {sys.argv[1]}").wait_for_completed()
 
 	# Set directory to the Category that Cozmo is going to photograph
 	global directory
@@ -29,10 +44,20 @@ def cozmo_program(robot: cozmo.robot.Robot):
 		os.makedirs(f'data/{directory}')
 
 	# Anytime Cozmo sees a "new" image, take a photo
+	global liveCamera
 	robot.add_event_handler(cozmo.world.EvtNewCameraImage, on_new_camera_image)
 
-	# Do this for 5 seconds, and then quit with a Lady Gaga quote
-	time.sleep(5)
-	print("I'm your biggest fan. I'll follow you until you love me")
+	# Initial photo sesh
+	liveCamera = True
+	robot.drive_straight(distance_mm(-200), speed_mmps(100), False, False, 0).wait_for_completed()
+	liveCamera = False
+
+	# Get all the angles
+	for i in range(3):
+		move_to_next_side(robot)
+
+	# Wait a second, and then quit with a Lady Gaga quote
+	time.sleep(1)
+	robot.say_text("I'm your biggest fan. I'll follow you until you love me").wait_for_completed()
 
 cozmo.run_program(cozmo_program, use_viewer=True, force_viewer_on_top=True)
