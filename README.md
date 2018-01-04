@@ -24,7 +24,7 @@ Getting enough training data for a deep learning project is often a pain. But th
 python3 scripts/cozmo-paparazzi.py seltzer
 ```
 
-![CozmoPaparazzi](assets/cozmo-paparazzi.py)
+![CozmoPaparazzi](assets/cozmo-paparazzi.gif)
 
 Repeat that step for as many images (categories) as you want Cozmo to learn! You should now see all your image categories as subdirectories within the `/data` folder.
 
