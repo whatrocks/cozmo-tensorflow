@@ -17,11 +17,11 @@ Login to FloydHub CLI (sign up for a [free account here](https://www.floydhub.co
 floyd login
 ```
 
-## Using Cozmo to generate training data
+## 1. Using Cozmo to generate training data
 
 Getting enough training data for a deep learning project is often a pain. But thankfully we have a robot who loves to run around and take photos, so let's just ask Cozmo to take pictures of something we want him to learn. Let's go with a can of delicious overpriced seltzer. Place Cozmo directly in front of a bottle of seltzer, and make sure that he has enough space to rotate around the can to take some pictures. Be sure to enter the name of the object that Cozmo is photographing when you run the `cozmo-paparazzi` script.
 ```bash
-python3 scripts/cozmo-paparazzi.py seltzer
+python3 cozmo-paparazzi.py seltzer
 ```
 
 ![CozmoPaparazzi](assets/cozmo-paparazzi.gif)
@@ -38,7 +38,7 @@ floyd data init cozmo-images
 floyd data upload
 ```
 
-## Training our model
+## 2. Training our model
 
 Make sure you are in our project's root directory, and then initialize a FloydHub project so that we can train our model on a fully-configured TensorFlow cloud GPU machine.
 ```bash
@@ -50,12 +50,12 @@ Now we can kick off a training job. Couple things to note. First, we're going to
 floyd run \
   --gpu \
   --data whatrocks/datasets/cozmo-images:data \
-  'python scripts/retrain.py --image_dir /data'
+  'python retrain.py --image_dir /data'
 ```
 
 Once your job is complete, you'll be able to see your newly retrained model in [the job's output directory](https://www.floydhub.com/whatrocks/projects/cozmo-tensorflow/8/output). You can easily convert this output into a standalone FloydHub dataset to make it easier to mount in future jobs, which we'll need to do in order to use our trained model going forward.
 
-## Testing our model on the cloud
+## 3. Testing our model on the cloud
 
 We can test our newly retrained model by running another job on FloydHub that mounts (1) our trained model and (2) our images dataset, and uses the `label_image` script.
 ```bash
@@ -63,10 +63,10 @@ floyd run \
   --gpu \
   --data whatrocks/datasets/cozmo-imagenet:model \
   --data whatrocks/datasets/cozmo-images:data \
-  'python scripts/label_image.py --graph=/model/output_graph.pb --image=/data/toothpaste/toothpaste-329.jpeg --labels=/model/output_labels.txt'
+  'python label_image.py --graph=/model/output_graph.pb --image=/data/toothpaste/toothpaste-329.jpeg --labels=/model/output_labels.txt'
 ```
 
-## Testing our model on Cozmo
+## 4. Testing our model on Cozmo
 
 Coming soon!
 
