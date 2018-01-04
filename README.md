@@ -28,7 +28,7 @@ Repeat that step for as many images (categories) as you want Cozmo to learn! You
 
 ### Uploading dataset to FloydHub
 
-Let's upload our images to [FloydHub](https://www.floydhub.com/whatrocks/data/cozmo-images) as a FloydHub Dataset so that we can use them in our model training process.
+Let's upload our images to [FloydHub](https://www.floydhub.com/whatrocks/datasets/cozmo-images) as a FloydHub Dataset so that we can use them in our model training process.
 
 ```bash
 cd data
@@ -46,9 +46,9 @@ floyd init cozmo-tensorflow
 Now we can kick off a training job. Couple things to note. First, we're going to mount the dataset that Cozmo created with the `--data` flag at the `/data` directory on our FloydHub machine. Second, I've edited this script to write its output to the `/output` directory (when running jobs on on FloydHub, you need to ensure that anything you want to save from a Job is stored within the `/output` directory). In our case, we'll be saving our retrained ImageNet model and the training labels to the `/output` folder.
 ```bash
 floyd run \
-	--gpu \
-	--data whatrocks/datasets/cozmo-images:data \
-	'python retrain.py --image_dir /data'
+  --gpu \
+  --data whatrocks/datasets/cozmo-images:data \
+  'python retrain.py --image_dir /data'
 ```
 
 Once your job is complete, you'll be able to see your newly retrained model in [the job's output directory](https://www.floydhub.com/whatrocks/projects/cozmo-tensorflow/8/output). You can easily convert this output into a standalone FloydHub dataset to make it easier to mount in future jobs, which we'll need to do in order to use our trained model going forward.
@@ -58,10 +58,10 @@ Once your job is complete, you'll be able to see your newly retrained model in [
 We can test our newly retrained model by running another job on FloydHub that mounts (1) our trained model and (2) our images dataset, and uses the `label_image` script.
 ```bash
 floyd run \
-	--gpu \
-	--data whatrocks/datasets/cozmo-imagenet:model \
-	--data whatrocks/datasets/cozmo-images:data \
-	'python label_image.py --graph=/model/output_graph.pb --image=/data/toothpaste/toothpaste-329.jpeg --labels=/model/output_labels.txt'
+  --gpu \
+  --data whatrocks/datasets/cozmo-imagenet:model \
+  --data whatrocks/datasets/cozmo-images:data \
+  'python label_image.py --graph=/model/output_graph.pb --image=/data/toothpaste/toothpaste-329.jpeg --labels=/model/output_labels.txt'
 ```
 
 ## Testing our model on Cozmo
