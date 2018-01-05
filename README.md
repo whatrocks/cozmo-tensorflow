@@ -71,10 +71,10 @@ I recommend converting your job's output into a standalone FloydHub Dataset to m
 
 We can test our newly retrained model by running another job on FloydHub that:
 
-* Mounts our trained model and labels
+* Mounts our [trained model and labels](https://www.floydhub.com/whatrocks/datasets/cozmo-imagenet)
 * Sets up a public REST endpoint
 
-Model-serving is an experimental feature on FloydHub - we'd love to hear your [feedback on Twitter!](https://www.twitter.com/floydhub_))
+Model-serving is an experimental feature on FloydHub - we'd love to hear your [feedback on Twitter!](https://www.twitter.com/floydhub_). You'll need to include a simple Flask app called `app.py` in your project's code for this feature to work. In our case, I've created a simple Flask app that will evaluate an image using the model we trained in our last step.
 
 ```bash
 floyd run \
