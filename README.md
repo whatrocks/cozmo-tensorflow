@@ -67,18 +67,44 @@ I recommend converting your job's output into a standalone FloydHub Dataset to m
 
 ## 3. Connecting Cozmo to our trained model on FloydHub
 
-We can test our newly retrained model by running another job on FloydHub that mounts (1) our trained model and (2) our images dataset, and uses the `label_image` script.
+We can test our newly retrained model by running another job on FloydHub that:
+
+* Mounts our trained model and labels
+* Sets up a public REST endpoint
+
+Model-serving is an experimental feature on FloydHub - we'd love to hear your [feedback on Twitter!](https://www.twitter.com/floydhub_))
+
 ```bash
 floyd run \
-  --gpu \
   --data whatrocks/datasets/cozmo-imagenet:model \
-  --data whatrocks/datasets/cozmo-images:data \
-  'python label_image.py --graph=/model/output_graph.pb --image=/data/toothpaste/toothpaste-329.jpeg --labels=/model/output_labels.txt'
+  --mode serve
 ```
 
-## 4. Testing our model on Cozmo
+Finally, let's run our `cozmo-detective.py` script to ask Cozmo to move around the office to find a specific object. 
 
-Coming soon!
+```bash
+python3 cozmo-detective.py toothpaste
+```
+
+Every time that Cozmo moves, he'll send an black and white image of whatever he's seeing to the model endpoint on FloydHub - and FloydHub will run the model against this image, returning the following payload with "Cozmo's guesses" and how long it took to compute the guesses.
+
+```javascript
+{
+  'answer': 
+    {
+      'plant': 0.022327899932861328, 
+      'seltzer': 0.9057837128639221, 
+      'toothpaste': 0.07188836485147476
+    }, 
+  'seconds': 0.947
+}
+```
+
+If Cozmo is at least 80% confident that he's looking at the object in question, then he'll run towards it victoriously! 
+
+![finder](assets/cozmo-detective.gif)
+
+Once you are done, don't forget to shut down your FloydHub serving job on the FloydHub website!
 
 ## References
 
