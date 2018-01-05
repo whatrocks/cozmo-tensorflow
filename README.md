@@ -43,12 +43,14 @@ floyd data upload
 ## 2. Training our model on FloydHub
 
 Make sure you are in our project's root directory, and then initialize a FloydHub project so that we can train our model on a fully-configured TensorFlow cloud GPU machine.
+
 ```bash
 floyd init cozmo-tensorflow
 ```
 
 Now we can kick off a deep learning training job on FloydHub. Couple things to note:
 
+* We'll be doing some simple transfer learning with the Inception v3 model provided by Google. Instead of training a model from scratch, we can start with this pre-trained model, and then replace its final layer to teach it to recognize the objects we want Cozmo to learn.
 * We're mounting the dataset that Cozmo created with the `--data` flag at the `/data` directory on our FloydHub machine.
 * I've edited this script (initially provided by the TensorFlow team) to write its output to the `/output` directory. This is important when you're using FloydHub, because FloydHub jobs always store their outputs in the `/output` directory). In our case, we'll be saving our retrained ImageNet model and the training labels to the `/output` folder.
 
@@ -59,7 +61,7 @@ floyd run \
   'python retrain.py --image_dir /data'
 ```
 
-That's it! There's no need to configure anything on AWS or install TensorFlow or deal with GPU drivers or anything like that. 
+That's it! There's no need to configure anything on AWS or install TensorFlow or deal with GPU drivers or anything like that. If you'd like to use TensorBoard during your training jobs, just add `--tensorboard` to your run command.
 
 Once your job is complete, you'll be able to see your newly retrained model in [the job's output directory](https://www.floydhub.com/whatrocks/projects/cozmo-tensorflow/8/output). 
 
