@@ -58,7 +58,7 @@ Now we can kick off a deep learning training job on FloydHub. Couple things to n
 floyd run \
   --gpu \
   --data whatrocks/datasets/cozmo-images:data \
-  'python retrain.py --image_dir /data'
+  "python retrain.py --image_dir /data"
 ```
 
 That's it! There's no need to configure anything on AWS or install TensorFlow or deal with GPU drivers or anything like that. If you'd like to use TensorBoard during your training jobs, just add `--tensorboard` to your run command.
