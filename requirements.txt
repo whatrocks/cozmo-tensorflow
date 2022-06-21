@@ -11,7 +11,7 @@ itsdangerous==0.24
 Jinja2==2.10
 MarkupSafe==1.0
 marshmallow==2.15.1
-numpy==1.13.3
+numpy==1.22.0
 pathlib2==2.3.0
 Pillow==5.0.0
 pytz==2017.3
